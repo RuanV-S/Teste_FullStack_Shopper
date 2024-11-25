@@ -1,0 +1,44 @@
+{
+  "name": "teste-fullstack-shopper",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "seed": "node prisma/seed.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@types/express": "^5.0.0",
+    "@types/supertest": "^6.0.2",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "joi": "^17.13.3",
+    "next": "14.2.18",
+    "react": "^18",
+    "react-dom": "^18",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.18",
+    "jest": "^29.7.0",
+    "postcss": "^8",
+    "prisma": "^5.22.0",
+    "supertest": "^7.0.0",
+    "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
