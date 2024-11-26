@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { calculateEstimation } from "../validation";
 import { HttpStatus } from "@/app/api/config/http/httpUtils";
-import axios from "axios";
 import { obterCoordenadas } from "./getGeometry";
 import { prisma } from "@/app/api/config/prisma";
-const API_KEY = process.env.GOOGLE_API_KEY;
+import { obterDistance } from "./getDistanceMatrix";
 
 export async function calculateRideEstimate(req: Request) {
   try {
@@ -43,18 +42,7 @@ export async function calculateRideEstimate(req: Request) {
       );
     }
 
-    const response = await axios.get(
-      "https://maps.googleapis.com/maps/api/distancematrix/json",
-      {
-        params: {
-          origins: origin,
-          destinations: destination,
-          mode: "driving",
-          language: "pt-BR",
-          key: API_KEY,
-        },
-      }
-    );
+    const response = await obterDistance(origin, destination);
 
     if (!response) {
       return NextResponse.json(
@@ -66,15 +54,13 @@ export async function calculateRideEstimate(req: Request) {
       );
     }
 
-    const data = response.data;
+    const element = response?.rows?.[0]?.elements?.[0];
 
-    const distancia =
-      parseFloat(
-        (data.rows[0]?.elements[0]?.distance.value / 1000).toFixed(1)
-      ) || 0;
+    const distancia = element?.distance?.value
+      ? parseFloat((element.distance.value / 1000).toFixed(1))
+      : 0;
 
-    const duracao =
-      data.rows[0]?.elements[0]?.duration?.text || "Não disponível";
+    const duracao = element?.duration?.text || "Não disponível";
 
     const drivers = await prisma.driver.findMany({
       where: {
@@ -112,7 +98,7 @@ export async function calculateRideEstimate(req: Request) {
       distance: distancia,
       duration: duracao,
       options: driverOptions,
-      routerResponse: data,
+      routerResponse: response,
     };
 
     return NextResponse.json(

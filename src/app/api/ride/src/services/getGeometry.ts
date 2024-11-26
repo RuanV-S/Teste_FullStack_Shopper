@@ -23,8 +23,8 @@ export async function obterCoordenadas(
 
     console.error("Endereço não encontrado:", endereco);
     return null;
-  } catch {
-    console.error("Erro ao obter coordenadas:");
+  } catch (error) {
+    console.error("Erro ao obter coordenadas:", error);
     return null;
   }
 }
