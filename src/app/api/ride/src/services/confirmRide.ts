@@ -74,6 +74,7 @@ export async function confirmationRide(req: Request) {
       data: {
         userId: customer_id,
         origin: origin,
+        destination: destination,
         duration: duration,
         distance: distance,
         driverId: driver.id,

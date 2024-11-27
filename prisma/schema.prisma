@@ -31,6 +31,7 @@ model Driver {
 model TripHistory {
   id          Int                 @id @default(autoincrement()) 
   origin      String              
+  destination String
   user        User               @relation(fields: [userId], references: [id])
   userId      String              
   driver      Driver             @relation(fields: [driverId], references: [id])

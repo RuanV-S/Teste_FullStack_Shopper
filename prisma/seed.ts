@@ -4,9 +4,9 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.tripHistory.deleteMany({});
-  await prisma.driver.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.review.deleteMany({});
+  await prisma.driver.deleteMany({});
 
   await prisma.driver.createMany({
     data: [
