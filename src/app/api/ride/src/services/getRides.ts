@@ -38,6 +38,9 @@ export async function getRides(
         userId: customer_id,
         driverId: driver_id ? Number(driver_id) : undefined,
       },
+      include: {
+        driver: true,
+      },
       orderBy: {
         createdAt: "desc", // Ordena pelas corridas mais recentes
       },
@@ -49,9 +52,23 @@ export async function getRides(
         { status: HttpStatus.BAD_REQUEST }
       );
 
+    const rides = trips.map((ride) => ({
+      id: ride.id,
+      date: ride.createdAt,
+      origin: ride.origin,
+      destination: ride.destination,
+      distance: ride.distance,
+      duration: ride.duration,
+      driver: {
+        id: ride.driver.id,
+        name: ride.driver.name,
+      },
+      value: ride.cost,
+    }));
+
     const body = {
       customer_id,
-      rides: trips,
+      rides,
     };
 
     return NextResponse.json(body, { status: HttpStatus.OK });
