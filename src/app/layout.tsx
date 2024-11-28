@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Shopper Táxi - Compras na Pista Certa",
+  title: "Taxi Plus - Sua Viagem com Conforto e Segurança",
   description:
-    "Shopper Táxi é o aplicativo que combina mobilidade e eficiência para conectar passageiros a motoristas de forma rápida e prática. Com uma interface simples e intuitiva, oferecemos uma experiência segura e confiável para suas viagens. Seu transporte, na pista certa",
+    "Bem-vindo ao Taxi Plus, o serviço de transporte que vai além das expectativas. Oferecemos viagens rápidas, seguras e confortáveis para você, com motoristas experientes e veículos modernos. Seja para ir ao trabalho, aeroporto, ou um evento especial, o Taxi Plus está sempre à disposição, pronto para levar você ao seu destino com tranquilidade.",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={montserrat.className}>{children}</body>
     </html>
   );
 }

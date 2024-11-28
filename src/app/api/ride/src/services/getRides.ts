@@ -1,17 +1,16 @@
 import { HttpStatus } from "@/app/api/config/http/httpUtils";
-import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import { getRide } from "../validation";
 import { prisma } from "@/app/api/config/prisma";
 
 export async function getRides(
-  req: NextApiRequest,
+  req: Request,
   { params }: { params: { customer_id: string } }
 ) {
   try {
     const customer_id = params.customer_id;
 
-    const url = new URL(req.url!, `http://${req.headers.host}`);
+    const url = new URL(req.url);
     const driver_id = url.searchParams.get("driver_id");
 
     const { error } = getRide.validate(

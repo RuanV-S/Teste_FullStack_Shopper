@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getRides } from "../src/services/getRides";
-import { NextApiRequest } from "next";
 
 export async function GET(
-  req: NextApiRequest,
+  req: Request,
   context: { params: { customer_id: string } }
 ) {
   try {

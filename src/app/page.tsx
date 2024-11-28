@@ -11,7 +11,7 @@ export default function Home() {
         <nav className="flex justify-center md:justify-end mt-4 md:mt-0">
           <ul className="flex p-0 m-0 list-none gap-20 md:gap-10 items-center">
             <li>
-              <a href="/home" className="text-black">
+              <a href="/login" className="text-black">
                 Entrar
               </a>
             </li>

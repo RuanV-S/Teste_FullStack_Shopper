@@ -6,9 +6,10 @@ import LogoDisplay from "../components/LogoDisplay";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { validate as validateUUID } from "uuid";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import RatingStars from "../components/RatingStars";
+import Cookies from "js-cookie";
 
 interface FormData {
   origin: string;
@@ -68,6 +69,7 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -76,13 +78,28 @@ export default function Page() {
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [drivers, setDrivers] = useState<Driver[] | null>();
+  const [mapStatic, setMapStatic] = useState<string | null>(null);
   const [rideHistory, setRideHistory] = useState<RideHistory[] | null>(null);
+  const userCookie = Cookies.get("user");
+
+  useEffect(() => {
+    if (userCookie) {
+      try {
+        const parsedUser = JSON.parse(userCookie);
+        if (parsedUser.id) {
+          setValue("customer_id", parsedUser.id);
+        }
+      } catch {
+        setValue("customer_id", userCookie);
+      }
+    }
+  }, [setValue, userCookie]);
+
   const handleSelectDriver = (driver: Driver) => {
     setSelectedDriver(driver);
   };
 
   const handleConfirmRide = async () => {
-    // Verifica se há um motorista selecionado
     if (!selectedDriver)
       return toast.current?.show({
         severity: "warn",
@@ -95,7 +112,7 @@ export default function Page() {
     const response = await fetch("/api/ride/confirm", {
       method: "POST",
       body: JSON.stringify({
-        customer_id: "e8b86d9b-55fb-40a1-8f6c-eeb5b3ac52ca",
+        customer_id: JSON.parse(userCookie!).id,
         origin: rideData?.routerResponse.origin_addresses[0],
         destination: rideData?.routerResponse.destination_addresses[0],
         distance: rideData?.distance,
@@ -108,7 +125,7 @@ export default function Page() {
       }),
     });
 
-    if (response.ok) {
+    if (response.status === 200) {
       const responseDrivers = await fetch("/api/driver");
       const responseJson = await responseDrivers.json();
 
@@ -153,6 +170,19 @@ export default function Page() {
             life: 3000,
           });
 
+        const responseMap = await fetch("/api/map", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            origin: `${data.body.origin.latitude},${data.body.origin.longitude}`,
+            destination: `${data.body.destination.latitude},${data.body.destination.longitude}`,
+          }),
+        });
+
+        const mapStatic = await responseMap.json();
+        setMapStatic(mapStatic.url);
         setRideData(data.body);
       } else {
         toast.current?.show({
@@ -186,6 +216,13 @@ export default function Page() {
         if (response.status === 200) {
           const responseJson = await response.json();
           setRideHistory(responseJson.rides);
+        } else if (response.status === 400) {
+          toast.current?.show({
+            severity: "warn",
+            summary: "Aviso",
+            detail: "Não tem corrida com esse motorista",
+            life: 3000,
+          });
         } else {
           toast.current?.show({
             severity: "warn",
@@ -205,7 +242,8 @@ export default function Page() {
     };
 
     return (
-      <main className="flex items-center justify-center min-h-screen">
+      <main className="flex bg-slate-500  items-center justify-center min-h-screen">
+        <Toast ref={toast} />
         <div className="w-full max-w-4xl p-8 bg-neutral-800 rounded-lg">
           <form
             onSubmit={handleSubmit(onSubmitFilter)}
@@ -308,8 +346,6 @@ export default function Page() {
                 </li>
               ))}
           </ul>
-
-          <Button onClick={() => setShowHistory(false)}>Voltar</Button>
         </div>
       </main>
     );
@@ -317,39 +353,35 @@ export default function Page() {
 
   if (rideData) {
     return (
-      <main className="flex items-center justify-center min-h-screen">
+      <main className="flex bg-slate-500  items-center justify-center min-h-screen">
         <Toast ref={toast} />
         <div className="flex w-full max-w-5xl p-4 space-x-4 bg-neutral-700 rounded-lg">
           <div className="w-2/3 h-96 mt-5">
-            <Image
-              src={`https://maps.googleapis.com/maps/api/staticmap?size=1200x800&markers=color:green|label:A|${rideData.origin.latitude},${rideData.origin.longitude}&markers=color:red|label:B|${rideData.destination.latitude},${rideData.destination.longitude}&key=AIzaSyALycczhnZ6H0Q1Ck6rMJMKe6xu-BW-YTM`}
-              alt="bomba"
-              width={1200}
-              height={600}
-            />
+            <Image src={mapStatic!} alt="bomba" width={1200} height={600} />
           </div>
 
           <div className="w-1/3 space-y-4">
             <ul className="flex flex-col gap-3">
-              {rideData.options.map((driver) => (
-                <li
-                  key={driver.id}
-                  className={`p-2 rounded-lg text-white shadow flex items-center gap-3 cursor-pointer ${
-                    selectedDriver?.id === driver.id
-                      ? "bg-yellow-600"
-                      : "bg-gray-800"
-                  }`}
-                  onClick={() => handleSelectDriver(driver)}
-                >
-                  <div>
-                    <p className="font-bold">{driver.name}</p>
-                    <RatingStars rating={driver.review.rating} />
-                    <p>{driver.description}</p>
-                    <p>Carro: {driver.vehicle}</p>
-                    <p>R$ {driver.value}</p>
-                  </div>
-                </li>
-              ))}
+              {rideData &&
+                rideData.options.map((driver) => (
+                  <li
+                    key={driver.id}
+                    className={`p-2 rounded-lg text-white shadow flex items-center gap-3 cursor-pointer ${
+                      selectedDriver?.id === driver.id
+                        ? "bg-yellow-600"
+                        : "bg-gray-800"
+                    }`}
+                    onClick={() => handleSelectDriver(driver)}
+                  >
+                    <div>
+                      <p className="font-bold">{driver.name}</p>
+                      <RatingStars rating={driver.review?.rating || 0} />
+                      <p>{driver.description}</p>
+                      <p>Carro: {driver.vehicle}</p>
+                      <p>R$ {driver.value}</p>
+                    </div>
+                  </li>
+                ))}
             </ul>
             <Button onClick={handleConfirmRide}>Confirmar Viagem</Button>
           </div>
@@ -359,10 +391,12 @@ export default function Page() {
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen">
+    <main className="flex bg-slate-500 items-center justify-center min-h-screen">
       <Toast ref={toast} />
-      <div className="bg-neutral-700 items-center p-8 rounded-lg m-4 shadow-lg w-full max-w-md">
-        <LogoDisplay />
+      <div className="bg-neutral-700  p-8 rounded-lg m-4 shadow-lg w-full max-w-md">
+        <div className="flex justify-center">
+          <LogoDisplay />
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
