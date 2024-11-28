@@ -6,7 +6,7 @@
     "dev": "next dev",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "seed": "node prisma/seed.ts",
+    "seed": "ts-node prisma/seed.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,10 +16,12 @@
     "@types/express": "^5.0.0",
     "@types/supertest": "^6.0.2",
     "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
     "boxicons": "^2.1.4",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "joi": "^17.13.3",
+    "js-cookie": "^3.0.5",
     "next": "14.2.18",
     "primereact": "^10.8.4",
     "react": "^18",
@@ -28,7 +30,9 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.14",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
