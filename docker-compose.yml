@@ -14,6 +14,33 @@ services:
     ports:
       - 5432:5432
 
+  backend:
+    build: .
+    ports:
+      - "8080:8080" # Expor o backend na porta 8080
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432:5432/shopper
+      - PORT=8080 # Definindo a porta para o Next.js API
+    command: ["npm", "run", "dev"] # Rodar o Next.js em modo de desenvolvimento para a API
+    volumes:
+      - .:/app
+    depends_on:
+      - db # Dependência do banco de dados para o backend
+
+  # Serviço do Frontend (Next.js para páginas)
+  frontend:
+    build: .
+    ports:
+      - "80:80" # Expor o frontend na porta 80
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432:5432/shopper
+      - PORT=80
+    volumes:
+      - .:/app
+    depends_on:
+      - backend # Dependência do backend para o frontend
+
 volumes:
   postgres-data:
   node-modules-front:
