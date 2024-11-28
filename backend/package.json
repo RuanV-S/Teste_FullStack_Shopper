@@ -1,0 +1,41 @@
+{
+  "name": "teste-fullstack-shopper",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "jest --runInBand",
+    "dev": "ts-node-dev src/server.ts",
+    "start": "ts-node-dev src/server.ts",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "joi": "^17.13.3",
+    "js-cookie": "^3.0.5",
+    "primereact": "^10.8.4",
+    "ts-node-dev": "^2.0.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/js-cookie": "^3.0.6",
+    "@types/node": "^20.17.9",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.18",
+    "jest": "^29.7.0",
+    "prisma": "^5.22.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}

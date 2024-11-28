@@ -1,0 +1,55 @@
+generator client {
+  provider        = "prisma-client-js" 
+  binaryTargets = ["native", "linux-musl"] 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String             @id @default(uuid()) 
+  name        String             
+  email       String             @unique
+  password    String  
+  trips       TripHistory[]       
+  createdAt   DateTime           @default(now())      
+  updatedAt   DateTime           @updatedAt            
+}
+
+model Driver {
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  description String              
+  car         String              
+  reviews     Review[]
+  ratePerKm   Float               
+  minKm       Int                 
+  trips       TripHistory[]       
+  createdAt   DateTime           @default(now())        
+  updatedAt   DateTime           @updatedAt            
+}
+
+model TripHistory {
+  id          Int                 @id @default(autoincrement()) 
+  origin      String              
+  destination String
+  user        User               @relation(fields: [userId], references: [id])
+  userId      String              
+  driver      Driver             @relation(fields: [driverId], references: [id])
+  driverId    Int              
+  distance    Float               
+  duration    String                 
+  cost        Float              
+  createdAt   DateTime           @default(now())       
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  rating      Float      
+  comment     String     
+  driverId    Int        
+  driver      Driver    @relation(fields: [driverId], references: [id])
+  createdAt   DateTime  @default(now())
+}

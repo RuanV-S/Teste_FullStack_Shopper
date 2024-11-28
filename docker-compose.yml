@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 services:
   db:
@@ -12,36 +12,41 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
+    networks:
+      - my_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    environment:
+      PORT: 80
+      NEXT_PUBLIC_API_URL: "http://backend:8080" # URL do backend no Docker
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - my_network
 
   backend:
-    build: .
-    ports:
-      - "8080:8080" # Expor o backend na porta 8080
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432:5432/shopper
-      - PORT=8080 # Definindo a porta para o Next.js API
-    command: ["npm", "run", "dev"] # Rodar o Next.js em modo de desenvolvimento para a API
-    volumes:
-      - .:/app
+      PORT: 8080
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/shopper" # URL do banco de dados no Docker
+    ports:
+      - "8080:8080"
     depends_on:
-      - db # Dependência do banco de dados para o backend
+      - db
+    networks:
+      - my_network
 
-  # Serviço do Frontend (Next.js para páginas)
-  frontend:
-    build: .
-    ports:
-      - "80:80" # Expor o frontend na porta 80
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432:5432/shopper
-      - PORT=80
-    volumes:
-      - .:/app
-    depends_on:
-      - backend # Dependência do backend para o frontend
+networks:
+  my_network:
+    driver: bridge
 
 volumes:
   postgres-data:
-  node-modules-front:
-  next-frontend:

@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fullstack Teste Shopper
 
-## Getting Started
+Este é um projeto full-stack usando **Next.ts** para o front-end e **Express.ts** para o back-end, com o banco de dados **PostgreSQL** sendo executado em containers Docker. O front-end e o back-end estão configurados para trabalhar juntos em uma rede Docker compartilhada.
 
-First, run the development server:
+## Tecnologias Usadas
+
+- **Frontend**: Next.ts
+- **Backend**: Express.ts
+- **Banco de Dados**: PostgreSQL
+- **Docker**: Containers para o ambiente de desenvolvimento
+- **Prisma**: ORM para interação com o banco de dados
+
+## Requisitos
+
+Antes de rodar o projeto, certifique-se de ter os seguintes pré-requisitos instalados:
+
+- [Docker](https://www.docker.com/get-started)
+- [Node.js](https://nodejs.org/)
+- [Prisma CLI](https://www.prisma.io/docs/getting-started)
+
+## Estrutura do Projeto
+
+- **Frontend**: Implementado com **Next.ts**.
+- **Backend**: Implementado com **Express.ts**.
+- **Banco de Dados**: Usando **PostgreSQL**, executado em um container Docker.
+
+### Estrutura de Diretórios
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+.
+├── backend/                   # Código do backend (Express.js)
+    ├── .env                        # Arquivo de variáveis de ambiente
+├── frontend/                   # Código do frontend (Next.js)
+└── docker-compose.yml          # Configuração dos containers Docker
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuração e Execução
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Clone o Repositório
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Clone este repositório para sua máquina local:
 
-## Learn More
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd <diretorio_do_repositorio>
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Variáveis de Ambiente
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis para o backend:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+DATABASE_URL="postgresql://postgres:postgres@db:5432/shopper"
+```
 
-## Deploy on Vercel
+Essas variáveis são usadas para conectar o backend ao banco de dados PostgreSQL, configurado no Docker.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Configuração do Docker
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Na raiz do projeto, você terá um arquivo `docker-compose.yml` que define os containers para o **frontend**, **backend** e **banco de dados (PostgreSQL)**.
+
+O Docker irá garantir que o ambiente de desenvolvimento seja isolado e configurado corretamente. Para iniciar todos os containers:
+
+```bash
+docker-compose up --build
+```
+
+Isso irá:
+
+- Construir e iniciar o container do **frontend**.
+- Construir e iniciar o container do **backend**.
+- Iniciar o container do **PostgreSQL**.
+
+### 4. Iniciar a aplicação
+
+Dentro do container do **backend**, você precisa rodar a migração do Prisma para configurar o banco de dados. Execute o seguinte comando:
+
+```bash
+docker-compose up --build
+```
+
+O frontend estará rodando no container, e você poderá acessá-lo em `http://localhost:80`.

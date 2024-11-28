@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "boxicons/css/boxicons.min.css";
+@import url("primereact/resources/themes/lara-light-purple/theme.css");
