@@ -47,12 +47,15 @@ describe("Rides Routes", () => {
 
       const user = await prisma.user.create({
         data: {
-          name: "Teste Teste",
+          name: "John Doe",
+          email: "john@teste.com",
+          password: "12345678",
         },
       });
 
       const trip1 = await prisma.tripHistory.create({
         data: {
+          destination: "2100 Amphitheatre Parkway, Mountain View, CA",
           userId: user.id,
           origin: mockGoogleMapsData.origin,
           duration: mockGoogleMapsData.duration,
@@ -64,6 +67,7 @@ describe("Rides Routes", () => {
 
       const trip2 = await prisma.tripHistory.create({
         data: {
+          destination: "2100 Amphitheatre Parkway, Mountain View, CA",
           userId: user.id,
           origin: "123 Main Street, Los Angeles, CA",
           duration: "45 mins",
@@ -115,13 +119,20 @@ describe("Rides Routes", () => {
   describe("GET /api/ride/:{customer_id}", () => {
     const mockGoogleMapsData = {
       origin: "1600 Amphitheatre Parkway, Mountain View, CA",
+      destination: "2100 Amphitheatre Parkway, Mountain View, CA",
       duration: "30 mins",
       distance: 15,
       value: 25.0,
     };
 
     it("Deve retorna uma lista com as viagem do usuario", async () => {
-      const user = await prisma.user.create({ data: { name: "John Doe" } });
+      const user = await prisma.user.create({
+        data: {
+          name: "John Doe",
+          email: "john@teste.com",
+          password: "12345678",
+        },
+      });
       const driver1 = await prisma.driver.create({
         data: {
           name: "Homer Simpson",
@@ -148,6 +159,7 @@ describe("Rides Routes", () => {
           userId: user.id,
           origin: mockGoogleMapsData.origin,
           duration: mockGoogleMapsData.duration,
+          destination: mockGoogleMapsData.destination,
           distance: mockGoogleMapsData.distance,
           driverId: Number(driver1.id),
           cost: mockGoogleMapsData.value,
@@ -157,6 +169,7 @@ describe("Rides Routes", () => {
       const trip2 = await prisma.tripHistory.create({
         data: {
           userId: user.id,
+          destination: "2100 Amphitheatre Parkway, Mountain View, CA",
           origin: "123 Main Street, Los Angeles, CA",
           duration: "45 mins",
           distance: 20,
@@ -202,7 +215,13 @@ describe("Rides Routes", () => {
     });
 
     it("Deve retorna uma lista com as viagem do usuario sendo filtradas pelo motorista", async () => {
-      const user = await prisma.user.create({ data: { name: "Jane Doe" } });
+      const user = await prisma.user.create({
+        data: {
+          name: "Jane Doe",
+          email: "teste@gmail.com",
+          password: "12345678",
+        },
+      });
       const driver = await prisma.driver.create({
         data: {
           name: "Homer Simpson",
@@ -217,6 +236,7 @@ describe("Rides Routes", () => {
       // Criar uma viagem com um driver específico
       const trip = await prisma.tripHistory.create({
         data: {
+          destination: "2100 Amphitheatre Parkway, Mountain View, CA",
           userId: user.id,
           origin: "123 Main Street, Los Angeles, CA",
           duration: "45 mins",
