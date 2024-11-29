@@ -47,10 +47,12 @@ cd <diretorio_do_repositorio>
 
 ### 2. Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis para o backend:
+Crie um arquivo `.env` na raiz do projeto com as variaveis de ambientes do .env_example
 
-```env
-DATABASE_URL="postgresql://postgres:postgres@db:5432/shopper"
+Para visualizar banco de dados na pasta backend
+
+```bash
+npx prisma studio
 ```
 
 Essas variáveis são usadas para conectar o backend ao banco de dados PostgreSQL, configurado no Docker.
@@ -62,7 +64,7 @@ Na raiz do projeto, você terá um arquivo `docker-compose.yml` que define os co
 O Docker irá garantir que o ambiente de desenvolvimento seja isolado e configurado corretamente. Para iniciar todos os containers:
 
 ```bash
-docker-compose up --build
+docker-compose up --build ou docker-compose up
 ```
 
 Isso irá:
